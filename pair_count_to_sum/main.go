@@ -8,22 +8,26 @@ import (
 	"strings"
 )
 
-func getPais(numbers []int64, targetSum int64) int64 {
-	m := make(map[int64]int64)
+func getPais(numbers []int32, targetSumOriginal int64) int32 {
+	m := make(map[int32]int32)
+	targetSum := int32(targetSumOriginal)
 	for _, number := range numbers {
 		if _, ok := m[number]; !ok {
-			m[number] = 0
+			m[number] = 1
+		} else {
+			m[number] = m[number] + 1
 		}
-		m[number] = m[number] + 1
+
 	}
 
-	var twiceCount int64 = 0
+	var twiceCount int32 = 0
+
 	for _, number := range numbers {
 		if _, ok := m[targetSum-number]; ok {
-			twiceCount += m[targetSum-number]
-		}
-		if targetSum-m[number] == number {
-			twiceCount--
+			if targetSum-number == number && m[number] == 1 {
+				continue
+			}
+			twiceCount++
 		}
 	}
 	return twiceCount / 2
@@ -58,13 +62,13 @@ func main() {
 			break
 		}
 	}
-	var numbers []int64
+	var numbers []int32
 	for _, number := range numbersAsStrings {
-		i, err := strconv.ParseInt(number, 10, 64)
+		i, err := strconv.Atoi(number)
 		if err != nil {
 			panic(err)
 		}
-		numbers = append(numbers, i)
+		numbers = append(numbers, int32(i))
 	}
 
 	fmt.Println()
